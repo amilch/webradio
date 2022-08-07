@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Radio Player</title>
+    <script defer src="js/alpinejs@3.10.3.js"></script>
+</head>
+
+<body>
+    <div x-data="{ stations: [
+        { name: 'Deutschlandfunk Info', audio: new Audio('https://st01.sslstream.dlf.de/dlf/01/mid/aac/stream.aac?aggregator=web') },
+        { name: 'Deutschlandfunk Kultur', audio: new Audio('https://st02.sslstream.dlf.de/dlf/02/mid/aac/stream.aac?aggregator=web') },
+        { name: 'BBC Radio 1', audio: new Audio('http://stream.live.vc.bbcmedia.co.uk/bbc_radio_one') },
+      ]}">
+        <template x-for="station in stations" :key="station.name">
+            <div>
+              <p x-text="station.name"></p>
+              <button @click="playAndMuteOthers($data.station, $data.stations)" x-text="station.playing ? 'Pause' : 'Play'"></button>
+            </div>
+        </template>
+    </div>
+
+    <script>
+        function pause(station) {
+            station.audio.pause();
+            station.playing = false;
+        }
+
+        function playAndMuteOthers(station, stations) {
+          if (!station.playing) {
+            for (other_station of stations) {
+              if (other_station.playing) {
+                pause(other_station);
+              }
+            }
+
+            station.audio.play();
+            station.playing = true;
+          } else {
+            pause(station);
+          }
+        }
+    </script>
+</body>
+
+</html>
